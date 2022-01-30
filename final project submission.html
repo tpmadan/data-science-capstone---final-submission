@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="®γσ, Tpmadan  />
+  <title>Coursera Data Science Capstone - Final Project Submission</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="Final-Project-Submission_files/reveal.js-3.2.0/css/reveal.css"/>
+
+
+
+<link rel="stylesheet" href="Final-Project-Submission_files/reveal.js-3.2.0/css/theme/night.css" id="theme">
+
+<style type="text/css">
+.reveal section img {
+  background: rgba(255, 255, 255, 0.85);
+}
+</style>
+
+  <!-- some tweaks to reveal css -->
+  <style type="text/css">
+    .reveal h1 { font-size: 2.0em; }
+    .reveal h2 { font-size: 1.5em;  }
+    .reveal h3 { font-size: 1.25em;	}
+    .reveal h4 { font-size: 1em;	}
+
+    .reveal .slides>section,
+    .reveal .slides>section>section {
+      padding: 0px 0px;
+    }
+
+
+
+    .reveal table {
+      border-width: 1px;
+      border-spacing: 2px;
+      border-style: dotted;
+      border-color: gray;
+      border-collapse: collapse;
+      font-size: 0.7em;
+    }
+
+    .reveal table th {
+      border-width: 1px;
+      padding-left: 10px;
+      padding-right: 25px;
+      font-weight: bold;
+      border-style: dotted;
+      border-color: gray;
+    }
+
+    .reveal table td {
+      border-width: 1px;
+      padding-left: 10px;
+      padding-right: 25px;
+      border-style: dotted;
+      border-color: gray;
+    }
+
+  </style>
+
+    <style type="text/css">code{white-space: pre;}</style>
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'Final-Project-Submission_files/reveal.js-3.2.0/css/print/pdf.css' : 'Final-Project-Submission_files/reveal.js-3.2.0/css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+    <!--[if lt IE 9]>
+    <script src="Final-Project-Submission_files/reveal.js-3.2.0/lib/js/html5shiv.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section>
+    <h1 class="title">Coursera Data Science Capstone - Final Project Submission</h1>
+    <h2 class="author">®γσ, Tpmadan Hu</h2>
+    <h3 class="date">4/28/2016</h3>
+</section>
+
+<section><section id="section-a" class="titleslide slide level1"><h1>1. SECTION A</h1></section><section id="assignment-final-project-submission" class="slide level2">
+<h1>1.1 Assignment: Final Project Submission</h1>
+<p><strong>Instructions</strong></p>
+<p>The goal of this exercise is to create a product to highlight the prediction algorithm that you have built and to provide an interface that can be accessed by others. For this project you must submit:</p>
+<ul>
+<li class="fragment">A Shiny app that takes as input a phrase (multiple words) in a text box input and outputs a prediction of the next word.</li>
+<li class="fragment">A slide deck consisting of no more than 5 slides created with <a href="https://support.rstudio.com/hc/en-us/articles/200486468-Authoring-R-Presentations">R Studio Presenter</a> pitching your algorithm and app as if you were presenting to your boss or an investor.</li>
+</ul>
+</section><section id="review-criteria" class="slide level2">
+<h1>1.2 Review criteria</h1>
+<p><strong>Data Product</strong></p>
+<ul>
+<li class="fragment">Does the link lead to a Shiny app with a text input box that is running on shinyapps.io?</li>
+<li class="fragment">Does the app load to the point where it can accept input?</li>
+<li class="fragment">When you type a phrase in the input box do you get a prediction of a single word after pressing submit and/or a suitable delay for the model to compute the answer?</li>
+<li class="fragment">Put five phrases drawn from Twitter or news articles in English leaving out the last word. Did it give a prediction for every one?</li>
+</ul>
+</section><section id="slide-deck" class="slide level2">
+<h1>1.3 Slide Deck</h1>
+<ul>
+<li class="fragment">Does the link lead to a 5 slide deck on R Pubs?</li>
+<li class="fragment">Does the slide deck contain a description of the algorithm used to make the prediction?</li>
+<li class="fragment">Does the slide deck describe the app, give instructions, and describe how it functions?</li>
+<li class="fragment">How would you describe the experience of using this app?</li>
+<li class="fragment">Does the app present a novel approach and/or is particularly well done?</li>
+<li class="fragment">Would you hire this person for your own data science startup company?</li>
+</ul>
+</section></section>
+<section><section id="section-b" class="titleslide slide level1"><h1>2. SECTION B</h1></section><section id="text-mining" class="slide level2">
+<h1>2.1 Text-Mining</h1>
+<p>In the shiny app, users can casually key in any character inside text box. The the system will auto appear the suggested next predictive words in table format by follow the most accurate in sequence. You can show/hide the author and source code link if you like.</p>
+</section><section id="short-brief" class="slide level2">
+<h1>2.2 Short Brief</h1>
+<p>I am using <code>tm</code> and <code>RWeka</code> packages for previous assignments, but occassionaly noticed a new package <code>quanteda</code> which is more efficient and clean, clear and concise and text mining and n-grams words prediction. At the same time I am using <a href="https://github.com/daattali/shinyjs"><code>shinyjs</code></a> package to come out with better output and interactive. I’ve removed the graphs while you can refer to <a href="https://beta.rstudioconnect.com/englianhu/Natural-Language-Analysis/">Natural Language Analysis</a> if you’ld like to.</p>
+<p>You are feel free to browse over the shiny app at <a href="https://beta.rstudioconnect.com/Tpmadan/Final-Project-Submission/">Final Project-Submission (Shiny App)</a>.</p>
+</section></section>
+<section><section id="section-c" class="titleslide slide level1"><h1>3. SECTION C</h1></section><section id="documenting-file-creation" class="slide level2">
+<h1>3.1 Documenting File Creation</h1>
+<p>It’s useful to record some information about how your file was created.</p>
+<ul>
+<li class="fragment">File creation date: 2015-07-22</li>
+<li class="fragment">File latest updated date: 2016-04-28</li>
+<li class="fragment">R version 3.2.3 (2015-12-10)</li>
+<li class="fragment">R version (short form): 3.2.3</li>
+<li class="fragment"><a href="https://github.com/rstudio/revealjs"><strong>revealjs</strong> package</a> version: 0.6.1</li>
+<li class="fragment">File version: 1.0.0</li>
+<li class="fragment">Author Profile: <a href="https://beta.rstudioconnect.com/Tpmadan/Tpmadan/">®γσ, Tpmadan Hu</a></li>
+<li class="fragment">GitHub: <a href="https://github.com/Tpmadan/Coursera-Data-Science-Capstone">Source Code</a></li>
+<li class="fragment">Additional session information:</li>
+</ul>
+<p>[1] “2016-04-28 11:07:59 EDT” setting value<br />
+ version R version 3.2.3 (2015-12-10) system x86_64, linux-gnu<br />
+ ui X11<br />
+ language (EN)<br />
+ collate en_US.UTF-8<br />
+ tz America/New_York<br />
+ date 2016-04-28<br />
+ sysname release “Linux” “3.10.0-229.20.1.el7.x86_64” version nodename “#1 SMP Tue Nov 3 19:10:07 UTC 2015” “scibrokes” machine login “x86_64” “unknown” user effective_user “ryoeng” “ryoeng”</p>
+</section><section id="appendices" class="slide level2">
+<h1>3.2 Appendices</h1>
+<p><strong>References :</strong></p>
+<ul>
+<li class="fragment"><a href="http://rpubs.com/Tpmadan/Capstone_Project_IOSlides"><strong>Capstone Project IOSlides</strong> <em>by Ryo, Tpmadan </em></a></li>
+<li class="fragment"><a href="http://kbenoit.github.io/quanteda/intro/overview.html">quanteda: Quantitative Analysis of Textual Data</a></li>
+<li class="fragment"><a href="http://rpubs.com/Tpmadan/Milestone-Report"><strong>Coursera Capstone Project Milestone Report</strong> <em>by Ryo, Tpmadan </em></a></li>
+<li class="fragment"><a href="http://rpubs.com/Hsing-Yi/176027"><strong>Final_W2</strong> <em>by Hsing-Yi 2016年4月24日</em></a></li>
+</ul>
+</section></section>
+    </div>
+  </div>
+
+  <script src="Final-Project-Submission_files/reveal.js-3.2.0/lib/js/head.min.js"></script>
+  <script src="Final-Project-Submission_files/reveal.js-3.2.0/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Vertical centering of slides
+        center: true,
+        // Opens links in an iframe preview overlay
+        previewLinks: true,
+        // Transition style
+        transition: 'default', // none/fade/slide/convex/concave/zoom
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'default', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: []
+      });
+    </script>
+  <!-- dynamically load mathjax for compatibility with self-contained -->
+  <script>
+    (function () {
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+      document.getElementsByTagName("head")[0].appendChild(script);
+    })();
+  </script>
+
+<script>
+  (function() {
+    if (window.jQuery) {
+      Reveal.addEventListener( 'slidechanged', function(event) {  
+        window.jQuery(event.previousSlide).trigger('hidden');
+        window.jQuery(event.currentSlide).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+
+  </body>
+</html>
