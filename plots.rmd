@@ -1,0 +1,229 @@
+## Loading the package 'BBmisc'
+if(suppressMessages(!require('BBmisc'))) install.packages('BBmisc')
+suppressMessages(library('BBmisc'))
+pkgs <- c('tufte', 'knitr', 'rmarkdown', 'lubridate', 'plyr', 'dplyr', 'magrittr', 'purrr', 'stringr', 'stringi', 'wordcloud', 'slam', 'tm', 'igraph', 'NLP', 'xtable', 'SnowballC', 'rpart', 'RWeka', 'RColorBrewer', 'rvest', 'parallel', 'doParallel', 'ggplot2', 'googleVis', 'htmltools', 'rCharts', 'janeaustenr', 'syuzhet', 'viridis')
+suppressAll(lib(pkgs)) 
+## load in case of BBmisc::lib() doesn't work
+suppressAll(plyr::l_ply(pkgs, require, quietly = TRUE))
+rm(pkgs)
+```
+
+```{r setting-adjustment, echo=FALSE}
+## Load BBmisc package again since there has error during knit (while working fine if run chunk-by-chunk)
+suppressMessages(library('BBmisc'))
+## Creating a parallel computing Cluster and support functions.
+## Preparing the parallel cluster using the cores
+doParallel::registerDoParallel(cores = 16)
+#'@ BiocParallel::register(MulticoreParam(workers=8))
+## Preparing the parallel cluster using the cores
+suppressAll(library('parallel'))
+jobcluster <- makeCluster(detectCores())
+invisible(clusterEvalQ(jobcluster, library('tm')))
+invisible(clusterEvalQ(jobcluster, library('RWeka')))
+options(mc.cores = 2)
+## Set the googleVis options first to change the behaviour of plot.gvis, so that only the chart 
+##  component of the HTML file is written into the output file.
+##  
+## Set option to below if you want to plot an independent webpage with graph 
+#'@ op <- options(gvis.plot.tag=NULL)
+op <- options(gvis.plot.tag='chart')
+## knitr configuration
+# invalidate cache when the tufte version changes
+suppressAll(library('knitr'))
+opts_chunk$set(tidy = TRUE, fig.path = 'figure/', comment = NA, message = FALSE, fig.keep = 'high', fig.width = 10, fig.height = 6, fig.align = 'center', cache.extra = packageVersion('tufte'), echo = TRUE, progress = TRUE)
+## Setting for rCharts
+## http://ramnathv.github.io/posts/rcharts-nvd3/
+options(warn = -1, htmltools.dir.version = FALSE, 
+        rcharts.mode = 'iframesrc', rcharts.cdn = TRUE, 
+        RCHART_WIDTH = 600, RCHART_HEIGHT = 400, 
+        RCHART_TEMPLATE = 'Rickshaw.html', RCHART_LIB = 'morris')
+```
+
+```{r collect-data, echo=FALSE}
+if(!file.exists('data/')) dir.create('data/')
+lnk <- 'https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip'
+destfile <- 'Coursera-SwiftKey.zip'
+if(!file.exists(paste0('data/', destfile))) {
+  download.file(lnk, destfile = paste0('data/', destfile))
+}
+if(!file.exists(paste0('data/final'))) {
+  ## Unzip the dataset
+  #'@ unzip(paste0('data/', destfile), exdir = 'data/final/de_DE', list = TRUE)
+  # Error in unzip(paste0("data/", destfile), exdir = "data/final/de_DE",  : 
+  #   'exdir' does not exist
+  unzip(paste0('data/', destfile), exdir = 'data/')
+}
+```
+
+```{r project-files, echo=FALSE}
+## Load plyr and dplyr packages again since there has error during knit (while working fine if run chunk-by-chunk)
+suppressAll(library('plyr'))
+suppressAll(library('dplyr'))
+## files for this mile-stone report
+lsfiles <- list.files('data/final/de_DE')
+## summary of files
+datafiles <- paste0('data/final/de_DE/', lsfiles)
+rm(lsfiles)
+```
+
+```{r read-files-efficiency1, echo=FALSE}
+## Load plyr and stringr packages again since there has error during knit (while working fine if run chunk-by-chunk)
+suppressAll(library('plyr'))
+suppressAll(library('stringr'))
+## Creating a parallel computing Cluster and support functions.
+## Preparing the parallel cluster using the cores
+doParallel::registerDoParallel(cores = 16)
+## http://www.r-bloggers.com/faster-files-in-r/
+## 
+## Run without parallel computing
+## 
+## readLines in normal way
+suppressAll(
+  dat1 <- llply(datafiles, function(x){
+    readLines(x, encoding = 'UTF-8')                                    
+  }))                                
+```
+
+```{r matching-data, echo=FALSE}
+names(dat1) <- c('blogs', 'news', 'twitter')
+## Delete the data folders to save the capacity.
+unlink('data/final', recursive = TRUE)
+#'@ dats <- c(dat1, dat1p, dat2, dat2p, dat3, dat3p, dat3s)
+dats <- list(dat1)
+suppressAll(rm(dat1))
+## randomly take one data as sample files for further analysis
+smp <- sample(dats, size=1) %>% unlist(recursive=FALSE)
+```
+
+```{r rm-objs2, include=FALSE}
+rm(datafiles, dats)
+```
+
+```{r data-summary1, echo=FALSE}
+suppressAll(library('stringi'))
+cWords <- llply(smp, stri_count_words)
+```
+
+```{r arrange-data1, echo=FALSE}
+mxSub <- llply(cWords, function(x) max(l
+th(x)))
+mxAll <- mxSub %>% unlist %>% max
+chSub <- llply(mxSub, function(x) mxAll - x)
+cWords1 <- llply(seq(cWords), function(i) {
+  c(cWords[[i]], rep(0, chSub[[i]]))
+  }) %>% data.frame(Line=seq(mxAll), .) %>% tbl_df
+names(cWords1) <- c('Line', names(cWords))
+rm(mxSub, mxAll, chSub)
+```
+
+```{r setting, message=FALSE}
+suppressAll(library('googleVis'))
+op <- options(gvis.plot.tag='chart')
+```
+
+```{r plot-hist1, result='asis'}
+# Number of bins chosen automatically, which is sometimes bad
+gvis.options <- list(legend="{ position: 'top', maxLines: 2 }",
+                colors="['#5C3292', '#1A8763', '#871B47']",
+                hAxis="{title:'names(cWords1)'}", width=600, height=400)
+hist.gvis <- gvisHistogram(data=cWords1[sample(nrow(cWords1), 10000), names(cWords)], option=gvis.options, chartid='Histogram')
+plot(hist.gvis)
+```
+
+```{r, results='asis'}
+## Show gvis options
+sapply(c("gvis.print.tag", "gvis.plot.tag", "gvis.tags"), getOption)
+M <- gvisMotionChart(Fruits, "Fruit", "Year")
+str(M)
+```
+
+```{r, results='asis'}
+## The output for a complete web page
+M
+```
+
+```{r, results='asis'}
+## Access only the plot,
+M$html$chart
+```
+
+```{r, results='asis'}
+## wrap it in cat and it becomes more readable,
+cat(unlist(M$html$chart))
+```
+
+```{r, results='asis'}
+## or use the print function.
+print(M, tag="chart")
+```
+
+```{r, results='asis'}
+## Extract the data as a JavaScript function.
+print(M, tag="jsData")
+```
+
+```{r, results='asis'}
+## Display the visualisation.
+## A web browser with Internet connection and Flash is required.
+plot(M)
+```
+
+```{r, results='asis'}
+## Combine with another chart, e.g. table
+tbl <- gvisTable(Fruits, options=list(height=220))
+Mtbl <- gvisMerge(M, tbl)
+plot(Mtbl)
+```
+
+This is a little Markdown example file.
+Set the googleVis options first.
+In this case change the behaviour of plot.gvis
+
+The following plot statements will automatically return the HTML
+required for the 'knitted' output.
+
+## Combo chart
+
+```{r ComboExample, results='asis', tidy=FALSE}
+## Add the mean
+CityPopularity$Mean=mean(CityPopularity$Popularity)
+CC <- gvisComboChart(CityPopularity, xvar='City',
+yvar=c('Mean', 'Popularity'), options=list(seriesType='bars', width=450, height=300, title='City Popularity', series='{0: {type:\"line\"}}'))
+plot(CC)
+```
+
+Example of gvisComboChart with R code shown above.
+
+## Place two charts next to each other
+
+```{r gvisMergeExample, results='asis', echo=FALSE}
+Geo <- gvisGeoChart(Exports, locationvar='Country', colorvar='Profit',
+options=list(height=300, width=350))
+Tbl <- gvisTable(Exports, options=list(height=300, width=200))
+plot(gvisMerge(Geo, Tbl, horizontal=TRUE))
+```
+
+Example of a gvisGeoChart with gvisTable and R code hidden.
+
+## Motion Chart
+
+```{r MotionChartExample, results='asis', tidy=FALSE}
+M <- gvisMotionChart(Fruits, 'Fruit', 'Year',
+options=list(width=400, height=350))
+plot(M)
+```
+
+Please note that the Motion Chart is only displayed when hosted on a
+web server, or is placed in a directory which has been added to the
+trusted sources in the [security settings of Macromedia]
+(http://www.macromedia.com/support/documentation/en/flashplayer/help/settings_manager04.html).
+See the googleVis package vignette for more details.
+
+```{r resetOptions}
+## Set options back to original options
+options(op)
+```
+
+# rCharts
+
+
