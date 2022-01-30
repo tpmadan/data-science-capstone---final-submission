@@ -859,10 +859,6 @@ devtools::session_info()$platform
 Sys.info()
 ```
 
-## 7.2 Versions' Log
-
-  - *Apr 22, 2016*: [version 1.0.1]()
-  - *March 14, 2015*: [version: 1.0.0](http://rpubs.com/tpmadan/MilestoneReport)
 
 ## 7.3 References
 
